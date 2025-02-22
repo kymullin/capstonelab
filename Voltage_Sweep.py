@@ -10,7 +10,7 @@ from qcodes.dataset import (
 from qcodes.instrument_drivers.Keithley import Keithley2450
 
 # Replace with your instrument's IP
-keithley_ip = "169.254.142.72"
+keithley_ip = "169.254.177.115"
 resource_string = f"TCPIP::{keithley_ip}::INSTR"
 
 keithley = Keithley2450("keithley", resource_string)
@@ -48,11 +48,24 @@ voltages = []
 currents = []
 
 with meas.run() as datasaver:
-    for v in np.arange(-10, 10.01, 0.1):  # Sweep from -10V to 10V
-        keithley.source.voltage(v)  # Set voltage
-        current = keithley.sense.current()  # Measure current
+    # First sweep: -10V to 10V
+    for v in np.arange(-10, 10.01, 0.5):  
+        keithley.source.voltage(v)  
+        current = keithley.sense.current()  
 
-        # Save to lists for plotting
+        voltages.append(v)
+        currents.append(current)
+
+        datasaver.add_result(
+            (keithley.source.voltage, v),
+            (keithley.sense.current, current)
+        )
+
+    # Second sweep: 10V back to -10V
+    for v in np.arange(10, -10.01, -0.5):  
+        keithley.source.voltage(v)  
+        current = keithley.sense.current()  
+
         voltages.append(v)
         currents.append(current)
 
@@ -63,11 +76,11 @@ with meas.run() as datasaver:
 
     dataid = datasaver.run_id
 
-# ✅ Plot the results using Matplotlib
+# Plot the results using Matplotlib
 plt.figure(figsize=(8, 6))
 plt.plot(voltages, currents, marker="o", linestyle="-", markersize=2)
 plt.xlabel("Voltage (V)")
 plt.ylabel("Current (A)")
-plt.title("IV Curve")
+plt.title("IV Curve - Forward and Reverse Sweep")
 plt.grid(True)
 plt.show()
