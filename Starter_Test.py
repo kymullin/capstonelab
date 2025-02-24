@@ -8,6 +8,8 @@ from qcodes.dataset import (
     plot_dataset,
 )
 from qcodes.instrument_drivers.Keithley import Keithley2450
+import os
+import datetime
 
 # Replace with your instrument's IP
 keithley_ip = "169.254.177.115"
@@ -58,6 +60,12 @@ y_data = data["keithley_sense_sweep"]["keithley_sense_sweep"]
 
 # Generate a simple x-axis (just index values)
 x_data = range(len(y_data))
+    
+# Generate timestamp and create directory
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+directory_name = f"tests/{timestamp}"
+os.makedirs(directory_name, exist_ok=True)
+file_path = os.path.join(directory_name, "plot.png")
 
 # Plot data
 plt.figure(figsize=(8, 6))
@@ -70,3 +78,7 @@ plt.show()
 
 # Close connection
 keithley.close()
+
+# Save plot as PNG
+plt.savefig(file_path)
+plt.close()

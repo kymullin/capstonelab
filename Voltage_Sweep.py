@@ -8,6 +8,8 @@ from qcodes.dataset import (
     new_experiment,
 )
 from qcodes.instrument_drivers.Keithley import Keithley2450
+import os
+import datetime
 
 # Replace with your instrument's IP
 keithley_ip = "169.254.177.115"
@@ -75,6 +77,12 @@ with meas.run() as datasaver:
         )
 
     dataid = datasaver.run_id
+    
+# Generate timestamp and create directory
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+directory_name = f"tests/{timestamp}"
+os.makedirs(directory_name, exist_ok=True)
+file_path = os.path.join(directory_name, "plot.png")
 
 # Plot the results using Matplotlib
 plt.figure(figsize=(8, 6))
@@ -84,3 +92,7 @@ plt.ylabel("Current (A)")
 plt.title("IV Curve - Forward and Reverse Sweep")
 plt.grid(True)
 plt.show()
+
+# Save plot as PNG
+plt.savefig(file_path)
+plt.close()
