@@ -10,9 +10,10 @@ from qcodes.dataset import (
 from qcodes.instrument_drivers.Keithley import Keithley2450
 import os
 import datetime
+from PIL import Image
 
 # Replace with your instrument's IP
-keithley_ip = "169.254.177.115"
+keithley_ip = "192.168.2.2"
 resource_string = f"TCPIP::{keithley_ip}::INSTR"
 
 keithley = Keithley2450("keithley", resource_string)
@@ -74,11 +75,12 @@ plt.xlabel("Measurement Index")
 plt.ylabel("Current (A)")
 plt.title("Measured Current from Keithley 2450")
 plt.grid(True)
-plt.show()
+# Save plot as PNG
+plt.savefig(file_path)
+img = Image.open(file_path)
+img.show()
 
 # Close connection
 keithley.close()
 
-# Save plot as PNG
-plt.savefig(file_path)
-plt.close()
+

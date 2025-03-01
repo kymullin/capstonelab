@@ -12,7 +12,7 @@ import os
 import datetime
 
 # Replace with your instrument's IP
-keithley_ip = "169.254.177.115"
+keithley_ip = "192.168.2.2"
 resource_string = f"TCPIP::{keithley_ip}::INSTR"
 
 keithley = Keithley2450("keithley", resource_string)

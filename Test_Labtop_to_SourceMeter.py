@@ -1,7 +1,7 @@
 import pyvisa
 
 # Replace with your instrument's IP
-keithley_ip = "169.254.95.132"
+keithley_ip = "192.168.2.2"
 resource_string = f"TCPIP::{keithley_ip}::INSTR"
 
 # Open a connection
