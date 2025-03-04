@@ -9,7 +9,7 @@ from qcodes.dataset import (
 from qcodes.instrument_drivers.Keithley import Keithley2450
 
 # Replace with your instrument's IP
-keithley_ip = "169.254.177.115"
+keithley_ip = "192.168.2.2"
 resource_string = f"TCPIP::{keithley_ip}::INSTR"
 
 keithley = Keithley2450("keithley", resource_string)
@@ -42,23 +42,19 @@ if keithley.ask(":OUTP?").strip() != "1":
 # **Linear Sweep Parameters**
 start_v = -10  # Start voltage
 stop_v = 10    # Stop voltage
-points = 81    # Number of points (including start/stop)
-delay = 0.1    # Delay between points (seconds)
+step = 0.5     # Voltage step size
+delay = 0.1    # Delay between steps (seconds)
 
-# **Configure Linear Sweep**
-keithley.write(f":SOUR:VOLT:SWE:LIN {start_v}, {stop_v}, {points}, {delay}, BEST")
-
-# **Start the Sweep**
-keithley.write(":INIT")
-
-# **Read Back Data**
-voltages = np.linspace(start_v, stop_v, points)
+voltages = np.arange(start_v, stop_v + step, step)  # Generate voltage steps
 currents = []
 
-for _ in voltages:
-    current = keithley.sense.current()
+# **Perform the Linear Sweep**
+for v in voltages:
+    keithley.source.voltage(v)  # Set voltage
+    time.sleep(delay)  # Allow system to settle
+    current = keithley.sense.current()  # Measure current
+
     currents.append(current)
-    time.sleep(delay)  # Ensure we are synchronized with the instrument
 
 # **Turn Off Output After Measurement**
 keithley.write(":OUTP OFF")

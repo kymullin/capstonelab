@@ -34,6 +34,7 @@ keithley.source.range(10)
 keithley.source.voltage(0)  # Start at 0V before sweeping
 
 # **Enable Output**
+keithley.write(":DISP:WIND:TRAC:X VOLT")
 keithley.write(":OUTP ON")
 time.sleep(0.5)  # Wait for stability
 
