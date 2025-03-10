@@ -2,7 +2,7 @@ import time
 import tkinter as tk
 from pathlib import Path
 from PIL import Image, ImageTk
-import Keithley_Voltage_Sweep as KWS
+import SCPI_Voltage_Sweep as SCPIVS
 
 class TestApp:
     def __init__(self, root):
@@ -29,7 +29,7 @@ class TestApp:
         self.start_test_btn.grid(row=6, column=1, columnspan=2, pady=10)
         
     def load_placeholder_images(self):
-        placeholder = Image.new('RGB', (300, 300), color=(200, 200, 200))
+        placeholder = Image.new('RGB', (400, 400), color=(200, 200, 200))
         self.placeholder_img = ImageTk.PhotoImage(placeholder)
         
         for i in range(4):
@@ -40,14 +40,12 @@ class TestApp:
             label_image.grid(row=1, column=i, padx=10, pady=10)
             self.image_labels.append(label_image)
 
-    def start_tests(self):
-        keithley_ip = "169.254.177.115"
-        
+    def start_tests(self):       
         for i in range(4):
             image_path = self.test_results_dir / f"Test_Result_{i+1}.png"
             
             # Run the IV sweep test
-            KWS.perform_iv_sweep(self.test_results_dir, i+1, keithley_ip)
+            SCPIVS.perform_iv_sweep(self.test_results_dir, i+1)
             
             # Wait for the image to be created
             timeout = 10  # Maximum wait time in seconds
@@ -61,7 +59,7 @@ class TestApp:
             
             # Load and display the generated image
             img = Image.open(image_path)
-            img = img.resize((300, 300), Image.LANCZOS)
+            img = img.resize((400, 400), Image.LANCZOS)
             img_tk = ImageTk.PhotoImage(img)
             self.image_labels[i].configure(image=img_tk)
             self.image_labels[i].image = img_tk
