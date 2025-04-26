@@ -47,6 +47,7 @@ class TestApp:
             self.display_image(image_path, i+1)
 
     def display_image(self, image_path, test_number):
+        print("Display")
         """Displays the image in a separate window using matplotlib."""
         img = mpimg.imread(image_path)
         plt.figure(figsize=(5, 5))

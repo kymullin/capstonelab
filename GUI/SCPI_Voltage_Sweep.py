@@ -9,6 +9,7 @@ def perform_iv_sweep(save_directory: str, test_number: int):
     # Replace with your instrument's IP
     keithley_ip = "192.168.2.2"
     resource_string = f"TCPIP::{keithley_ip}::INSTR"
+    sleep_timer = 0.5
     
     keithley = Keithley2450("keithley", resource_string)
     keithley.reset()
@@ -16,6 +17,8 @@ def perform_iv_sweep(save_directory: str, test_number: int):
     # Enable output
     keithley.write("OUTP ON")  
     time.sleep(0.5)  # Allow stabilization
+    
+    keithley.write("SENS:CURR:NPLC 10")
     
     # Verify Output is On
     if keithley.ask_raw("OUTP?").strip() != "1":
@@ -29,18 +32,18 @@ def perform_iv_sweep(save_directory: str, test_number: int):
     # Forward Sweep: -10V to 10V
     for v in voltages:
         keithley.write(f"SOUR:VOLT {v}")  # Set voltage
-        time.sleep(0.1)  # Allow settling
+        time.sleep(sleep_timer)  # Allow settling
         current = float(keithley.ask_raw("MEAS:CURR?"))  # Measure current
         currents.append(current)
-        print(f"V: {v:.2f}V, I: {current:.6f}A")  # Live output
+        #print(f"V: {v:.2f}V, I: {current:.6f}A")  # Live output
     
     # Reverse Sweep: 10V back to -10V
     for v in voltages_reverse:
         keithley.write(f"SOUR:VOLT {v}")  # Set voltage
-        time.sleep(0.1)  # Allow settling
+        time.sleep(sleep_timer)  # Allow settling
         current = float(keithley.ask_raw("MEAS:CURR?"))  # Measure current
         currents.append(current)
-        print(f"V: {v:.2f}V, I: {current:.6f}A")  # Live output
+        #print(f"V: {v:.2f}V, I: {current:.6f}A")  # Live output
     
     # Turn off output after sweep
     keithley.write("OUTP OFF")
