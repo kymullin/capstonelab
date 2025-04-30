@@ -1,1 +1,1 @@
-Error: Command '['/home/admin/capstonelab/venv/bin/python3', '-m', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status 1.
+14:30:23: Failed to execute "python "GUI_V4.py"" (start-script could not be created: Failed to write file “/tmp/geany_run_script_UDLV52.sh.KHLV52”: write() failed: No space left on device)
