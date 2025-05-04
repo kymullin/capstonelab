@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 ./GUI/GUI_V4.py
+python3 ./GUI/GUI_V5.py

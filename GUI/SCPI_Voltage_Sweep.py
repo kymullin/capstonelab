@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
+import csv
 import datetime
 from qcodes.instrument_drivers.Keithley import Keithley2450
 
@@ -68,3 +69,24 @@ def perform_iv_sweep(save_directory: str, test_number: int):
     keithley.close()
     
     print(f"Test result saved to {file_path}")
+    
+    # Save to CSV
+    csv_path = os.path.join(save_directory, "tests.csv")
+    voltage_sweep = list(voltages) + list(voltages_reverse)
+
+    # Prepare data: [test_number, timestamp, v1, i1, v2, i2, ..., vn, in]
+    flat_data = [test_number]
+    for v, i in zip(voltage_sweep, currents):
+        flat_data.extend([v, i])
+
+    # Write to file
+    write_header = not os.path.exists(csv_path)
+    with open(csv_path, mode="a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        if write_header:
+            header = ["Test#"]
+            for i in range(len(voltage_sweep)):
+                header.append(f"V{i+1}")
+                header.append(f"I{i+1}")
+            writer.writerow(header)
+        writer.writerow(flat_data)
